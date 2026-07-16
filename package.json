@@ -18,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/elegis/n8n-nodes-elegis.git"
+		"url": "https://github.com/fagnerdireito/n8n-nodes-elegis.git"
 	},
 	"scripts": {
 		"build": "n8n-node build",
