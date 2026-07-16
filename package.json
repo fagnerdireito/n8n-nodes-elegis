@@ -11,6 +11,9 @@
 		"demanda"
 	],
 	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
 	"homepage": "https://elegis.com.br",
 	"author": {
 		"name": "Elegis",
