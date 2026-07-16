@@ -71,7 +71,7 @@ export class Elegis implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Elegis',
 		name: 'elegis',
-		icon: 'file:elegis.svg',
+		icon: 'file:../../icons/elegis.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',

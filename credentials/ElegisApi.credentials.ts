@@ -13,7 +13,7 @@ export class ElegisApi implements ICredentialType {
 
 	documentationUrl = 'https://elegis.com.br/docs';
 
-	icon: Icon = 'file:../nodes/Elegis/elegis.svg';
+	icon: Icon = 'file:../icons/elegis.svg';
 
 	properties: INodeProperties[] = [
 		{
