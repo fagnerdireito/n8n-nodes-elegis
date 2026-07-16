@@ -59,6 +59,24 @@ preservando o caminho, então `icons/elegis.svg` → `dist/icons/elegis.svg` soz
 
 Não deixe `.png`/`.svg` órfãos no repo: esse mesmo glob os empacota para o npm à toa.
 
+## 4. `nodes/Elegis/elegis.png` — NÃO REMOVER
+
+Esse PNG parece órfão: nenhum código o referencia, e o glob de estáticos o copia para o
+`dist` (~72 KB no pacote). Mesmo assim ele precisa existir **nesse caminho exato**.
+
+O Creator Portal não lê o ícone do npm — ele monta uma URL fixa para o arquivo no repo:
+
+```
+https://raw.githubusercontent.com/fagnerdireito/n8n-nodes-elegis/main/nodes/Elegis/elegis.png
+```
+
+Esse caminho foi gravado pelo portal na submissão original e **não é re-derivado** a cada
+scan (confirmado: passou por um Automated Review completo e continuou pedindo a mesma URL).
+Apagar o arquivo faz a logo do node quebrar no portal, inclusive para o revisor humano.
+
+O ícone que o n8n renderiza no editor é outro: vem de `icons/elegis.svg`, dentro do pacote.
+Os dois coexistem de propósito — o SVG serve o produto, o PNG serve o portal.
+
 ## Paleta da marca
 
 - Verde do "e": `#5DC10B`
