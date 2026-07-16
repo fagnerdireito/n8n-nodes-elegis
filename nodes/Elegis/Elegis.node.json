@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-elegis.elegis",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Sales", "Communication"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://elegis.com.br/docs"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://elegis.com.br/docs"
+			}
+		]
+	},
+	"alias": ["Elegis", "CRM", "Cadastro", "Demanda", "Grupo"]
+}

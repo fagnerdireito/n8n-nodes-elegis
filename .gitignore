@@ -1,0 +1,32 @@
+# Dependencies & build
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs & coverage
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+.nyc_output/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# Local workspace (not for publish)
+.vscode/
+project.md
+
+# Release tooling
+.release-it.json.bak
