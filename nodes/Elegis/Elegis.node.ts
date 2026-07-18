@@ -4,9 +4,8 @@ import type {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
-	JsonObject,
 } from 'n8n-workflow';
-import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { elegisApiRequest, mergeContext, parseJsonParameter } from './GenericFunctions';
 import {
@@ -148,53 +147,59 @@ export class Elegis implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		const continueOnFail = this.continueOnFail();
 
 		for (let i = 0; i < items.length; i++) {
+			// When not continuing on failure, run outside a catch so the NodeApiError /
+			// NodeOperationError raised downstream propagates untouched.
+			if (!continueOnFail) {
+				returnData.push(...(await processItem.call(this, i)));
+				continue;
+			}
+
 			try {
-				const resource = this.getNodeParameter('resource', i) as string;
-				const operation = this.getNodeParameter('operation', i) as string;
-				const clienteId = this.getNodeParameter('clienteId', i) as number;
-				const userId = this.getNodeParameter('userId', i) as number;
-				const context = { cliente_id: clienteId, user_id: userId };
-
-				let responseData: IDataObject | IDataObject[] = {};
-
-				if (resource === 'cadastro') {
-					responseData = await executeCadastro.call(this, operation, context, i);
-				} else if (resource === 'grupo') {
-					responseData = await executeGrupo.call(this, operation, context, i);
-				} else if (resource === 'demanda') {
-					responseData = await executeDemanda.call(this, operation, context, i);
-				} else if (resource === 'grupoCadastro') {
-					responseData = await executeGrupoCadastro.call(this, operation, context, i);
-				} else {
-					throw new NodeOperationError(this.getNode(), `Unknown resource: ${resource}`, {
-						itemIndex: i,
-					});
-				}
-
-				const executionData = this.helpers.constructExecutionMetaData(
-					this.helpers.returnJsonArray(responseData),
-					{ itemData: { item: i } },
-				);
-				returnData.push(...executionData);
+				returnData.push(...(await processItem.call(this, i)));
 			} catch (error) {
-				if (this.continueOnFail()) {
-					returnData.push({
-						json: { error: (error as Error).message },
-						pairedItem: { item: i },
-					});
-					continue;
-				}
-				if (error instanceof NodeApiError || error instanceof NodeOperationError) {
-					throw error;
-				}
-				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
+				returnData.push({
+					json: { error: (error as Error).message },
+					pairedItem: { item: i },
+				});
 			}
 		}
 
 		return [returnData];
 	}
+}
+
+async function processItem(
+	this: IExecuteFunctions,
+	itemIndex: number,
+): Promise<INodeExecutionData[]> {
+	const resource = this.getNodeParameter('resource', itemIndex) as string;
+	const operation = this.getNodeParameter('operation', itemIndex) as string;
+	const clienteId = this.getNodeParameter('clienteId', itemIndex) as number;
+	const userId = this.getNodeParameter('userId', itemIndex) as number;
+	const context = { cliente_id: clienteId, user_id: userId };
+
+	let responseData: IDataObject | IDataObject[] = {};
+
+	if (resource === 'cadastro') {
+		responseData = await executeCadastro.call(this, operation, context, itemIndex);
+	} else if (resource === 'grupo') {
+		responseData = await executeGrupo.call(this, operation, context, itemIndex);
+	} else if (resource === 'demanda') {
+		responseData = await executeDemanda.call(this, operation, context, itemIndex);
+	} else if (resource === 'grupoCadastro') {
+		responseData = await executeGrupoCadastro.call(this, operation, context, itemIndex);
+	} else {
+		throw new NodeOperationError(this.getNode(), `Unknown resource: ${resource}`, {
+			itemIndex,
+		});
+	}
+
+	return this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(responseData), {
+		itemData: { item: itemIndex },
+	});
 }
 
 async function executeCadastro(
