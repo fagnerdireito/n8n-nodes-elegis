@@ -106,14 +106,7 @@ export const grupoFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Busca',
-				name: 'busca',
-				type: 'string',
-				default: '',
-				description: 'Search by name',
-			},
-			{
-				displayName: 'Ordem',
+				displayName: 'Order',
 				name: 'ordem',
 				type: 'options',
 				options: [
@@ -123,7 +116,7 @@ export const grupoFields: INodeProperties[] = [
 				default: 'desc',
 			},
 			{
-				displayName: 'Ordenar Por',
+				displayName: 'Order By',
 				name: 'ordenar_por',
 				type: 'options',
 				options: [
@@ -131,7 +124,7 @@ export const grupoFields: INodeProperties[] = [
 					{ name: 'Created At', value: 'created_at' },
 					{ name: 'Form Active', value: 'form_active' },
 					{ name: 'ID', value: 'id' },
-					{ name: 'Nome', value: 'nome' },
+					{ name: 'Name', value: 'nome' },
 					{ name: 'Slug', value: 'slug' },
 					{ name: 'Updated At', value: 'updated_at' },
 				],
@@ -149,6 +142,13 @@ export const grupoFields: INodeProperties[] = [
 				type: 'number',
 				default: 15,
 				description: 'Items per page (max 15)',
+			},
+			{
+				displayName: 'Search',
+				name: 'busca',
+				type: 'string',
+				default: '',
+				description: 'Search by name',
 			},
 		],
 	},

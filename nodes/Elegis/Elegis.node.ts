@@ -4,8 +4,9 @@ import type {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
+	JsonObject,
 } from 'n8n-workflow';
-import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { elegisApiRequest, mergeContext, parseJsonParameter } from './GenericFunctions';
 import {
@@ -71,7 +72,10 @@ export class Elegis implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Elegis',
 		name: 'elegis',
-		icon: 'file:../../icons/elegis.svg',
+		icon: {
+			light: 'file:../../icons/elegis.light.svg',
+			dark: 'file:../../icons/elegis.dark.svg',
+		},
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -182,7 +186,10 @@ export class Elegis implements INodeType {
 					});
 					continue;
 				}
-				throw error;
+				if (error instanceof NodeApiError || error instanceof NodeOperationError) {
+					throw error;
+				}
+				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex: i });
 			}
 		}
 
@@ -226,7 +233,7 @@ async function executeCadastro(
 	}
 
 	if (operation === 'create') {
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(
 			this,
@@ -238,7 +245,7 @@ async function executeCadastro(
 
 	if (operation === 'update') {
 		const cadastroId = this.getNodeParameter('cadastroId', itemIndex) as number;
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(
 			this,
@@ -295,14 +302,14 @@ async function executeGrupo(
 	}
 
 	if (operation === 'create') {
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(this, 'POST', '/app/api/grupos', body)) as IDataObject;
 	}
 
 	if (operation === 'update') {
 		const grupoId = this.getNodeParameter('grupoId', itemIndex) as number;
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(
 			this,
@@ -359,7 +366,7 @@ async function executeDemanda(
 	}
 
 	if (operation === 'create') {
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(
 			this,
@@ -371,7 +378,7 @@ async function executeDemanda(
 
 	if (operation === 'update') {
 		const demandaId = this.getNodeParameter('demandaId', itemIndex) as number;
-		const data = parseJsonParameter(this.getNodeParameter('data', itemIndex), 'Data');
+		const data = parseJsonParameter(this.getNode(), this.getNodeParameter('data', itemIndex), 'Data', itemIndex);
 		const body = mergeContext(context.cliente_id as number, context.user_id as number, data);
 		return (await elegisApiRequest.call(
 			this,

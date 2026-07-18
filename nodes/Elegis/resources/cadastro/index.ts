@@ -106,13 +106,6 @@ export const cadastroFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Busca',
-				name: 'busca',
-				type: 'string',
-				default: '',
-				description: 'Search by name',
-			},
-			{
 				displayName: 'Grupo ID',
 				name: 'grupo_id',
 				type: 'number',
@@ -132,6 +125,13 @@ export const cadastroFields: INodeProperties[] = [
 				type: 'number',
 				default: 15,
 				description: 'Items per page (max 15)',
+			},
+			{
+				displayName: 'Search',
+				name: 'busca',
+				type: 'string',
+				default: '',
+				description: 'Search by name',
 			},
 		],
 	},

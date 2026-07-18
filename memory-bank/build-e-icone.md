@@ -41,10 +41,15 @@ nas duas. Se a segunda vier menor, o incremental voltou.
 
 ## 3. O ícone tem que ser SVG
 
-Referências (uma única arte, `icons/elegis.svg`, na convenção da pasta `icons/` da raiz):
+Referências (duas artes na pasta `icons/` da raiz — a regra
+`@n8n/community-nodes/icon-prefer-themed-variants` exige a forma `{ light, dark }`):
 
-- `nodes/Elegis/Elegis.node.ts` → `file:../../icons/elegis.svg`
-- `credentials/ElegisApi.credentials.ts` → `file:../icons/elegis.svg`
+- `nodes/Elegis/Elegis.node.ts` → `{ light: 'file:../../icons/elegis.light.svg', dark: 'file:../../icons/elegis.dark.svg' }`
+- `credentials/ElegisApi.credentials.ts` → `{ light: 'file:../icons/elegis.light.svg', dark: 'file:../icons/elegis.dark.svg' }`
+
+Hoje as duas artes são idênticas (o logo é um quadrado azul sólido, legível nos dois
+temas). Se um dia a arte mudar para algo que dependa do fundo, é `elegis.dark.svg` que
+precisa ser ajustado.
 
 **PNG não funciona**, mesmo o tipo `IconFile` do `n8n-workflow` aceitando `.png`. Duas
 regras reprovam:

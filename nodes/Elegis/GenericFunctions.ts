@@ -4,9 +4,10 @@ import type {
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
+	INode,
 	JsonObject,
 } from 'n8n-workflow';
-import { NodeApiError } from 'n8n-workflow';
+import { NodeApiError, NodeOperationError } from 'n8n-workflow';
 
 export async function elegisApiRequest(
 	this: IExecuteFunctions | ILoadOptionsFunctions,
@@ -47,7 +48,12 @@ export async function elegisApiRequest(
 /**
  * Parse a JSON parameter that may already be an object (n8n json type) or a string.
  */
-export function parseJsonParameter(value: unknown, fieldName: string): IDataObject {
+export function parseJsonParameter(
+	node: INode,
+	value: unknown,
+	fieldName: string,
+	itemIndex?: number,
+): IDataObject {
 	if (value === undefined || value === null || value === '') {
 		return {};
 	}
@@ -57,21 +63,21 @@ export function parseJsonParameter(value: unknown, fieldName: string): IDataObje
 	}
 
 	if (typeof value === 'string') {
+		let parsed: unknown;
 		try {
-			const parsed = JSON.parse(value) as unknown;
-			if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-				throw new Error(`${fieldName} must be a JSON object`);
-			}
-			return parsed as IDataObject;
-		} catch (error) {
-			if (error instanceof Error && error.message.includes('must be a JSON object')) {
-				throw error;
-			}
-			throw new Error(`${fieldName} contains invalid JSON`);
+			parsed = JSON.parse(value);
+		} catch {
+			throw new NodeOperationError(node, `${fieldName} contains invalid JSON`, { itemIndex });
 		}
+
+		if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+			throw new NodeOperationError(node, `${fieldName} must be a JSON object`, { itemIndex });
+		}
+
+		return parsed as IDataObject;
 	}
 
-	throw new Error(`${fieldName} must be a JSON object`);
+	throw new NodeOperationError(node, `${fieldName} must be a JSON object`, { itemIndex });
 }
 
 export function mergeContext(

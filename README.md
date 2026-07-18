@@ -6,7 +6,7 @@ Use it to automate **Cadastro**, **Grupo**, **Demanda**, and **linking cadastros
 
 - API docs: https://elegis.com.br/docs  
 - Brand image (public): https://elegis.com.br/images/elegis_app.png  
-- Node icon in package: SVG (`nodes/Elegis/elegis.svg`) — required by n8n community lint / verification; PNG source kept as `nodes/Elegis/elegis.png`
+- Node icon in package: themed SVG pair (`icons/elegis.light.svg` + `icons/elegis.dark.svg`) — required by n8n community lint / verification; PNG source kept as `nodes/Elegis/elegis.png`
 
 ## Installation
 
